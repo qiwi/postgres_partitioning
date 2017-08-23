@@ -36,7 +36,7 @@ begin
   loop
 
     v_begin_ts    = v_list.pm_create_next_from;
-    v_end_ts      = v_begin_ts + v_list.pm_part_interval ;
+    v_end_ts      = v_begin_ts + v_list.pm_part_interval;
     v_pattern     = v_list.pm_schema || '.'|| v_list.pm_table_name;
 
     while (v_end_ts <= p_scan_date + v_list.pm_create_forward)
@@ -85,8 +85,8 @@ begin
         end loop;
 
         insert into   partitioning.map_by_datetime_partitions
-               (  pm_schema,  pm_table_name,  pm_partition_name,  pm_partition_from,  pm_partition_till,pm_partitions_schema)
-        values (  v_list.pm_schema,  v_list.pm_table_name,  v_partition_name,  v_begin_ts,  v_end_ts,v_list.pm_partitions_schema);
+               (  pm_schema,  pm_table_name,  pm_partition_name,  pm_partition_from,  pm_partition_till, pm_partitions_schema)
+        values (  v_list.pm_schema,  v_list.pm_table_name,  v_partition_name,  v_begin_ts,  v_end_ts, v_list.pm_partitions_schema);
 
         v_begin_ts = v_end_ts;
         v_end_ts   = v_end_ts + v_list.pm_part_interval ;

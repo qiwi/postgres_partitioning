@@ -1,4 +1,4 @@
-create or replace function partitioning.inherit_insert_permitions (
+create or replace function partitioning.inherit_insert_permissions (
   p_schema text,
   p_table_name text,
   p_partition_name text = ''::text
@@ -9,8 +9,8 @@ declare
   v_grants record; 
 begin
   for v_grants
-    in 
-   select  'grant insert on  '|| p.pm_schema||'.'|| p.pm_partition_name 
+    in
+   select  'grant insert on  '|| p.pm_partitions_schema ||'.'|| p.pm_partition_name
                     || ' to "'|| g.grantee||'"' as cmd
             from information_schema.role_table_grants g
             join partitioning.map_by_datetime_partitions p

@@ -16,26 +16,15 @@ begin
   for v_list in
          select pm_schema,
                 pm_table_name,
-                pm_owner,
-                pm_tablespace,
-                pm_part_column,
-                pm_part_interval,
-                pm_part_name_tmpl,
-                pm_create_next_from,
-                pm_create_enabled,
-                pm_create_forward,
-                pm_create_last_date,
-                pm_drop_enabled,
-                pm_drop_retention,
-                pm_drop_last_date
+                pm_drop_retention
            from partitioning.map_by_datetime
           where pm_drop_enabled = true
   loop
      v_retention = (p_scan_date -  v_list.pm_drop_retention);
      for v_parts in
     	 select pmp.pm_schema
-              , pmp.pm_partition_name,
-                pm_partitions_schema
+              , pmp.pm_partition_name
+              , pm_partitions_schema
            from pg_inherits
            join pg_class  c on (inhrelid=c.oid)
            join pg_class  p on (inhparent=p.oid)
@@ -54,7 +43,7 @@ begin
        delete from partitioning.map_by_datetime_partitions pmp
        where pmp.pm_partition_name    = v_parts.pm_partition_name
          and pmp.pm_schema            = v_parts.pm_schema
-         and pmp.pm_partitions_schema = v_parts.pm_partitions_schema ;
+         and pmp.pm_partitions_schema = v_parts.pm_partitions_schema;
      end loop;
      update partitioning.map_by_datetime
              set pm_drop_last_date = current_timestamp

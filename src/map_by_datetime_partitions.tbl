@@ -1,5 +1,6 @@
 create table  if not exists partitioning.map_by_datetime_partitions (
   pm_schema varchar(250) not null,
+  pm_partitions_schema varchar(250) not null,
   pm_table_name varchar(250) not null,
   pm_partition_name varchar(250) not null,
   pm_partition_from timestamp without time zone not null,
