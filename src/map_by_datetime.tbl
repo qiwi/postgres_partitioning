@@ -1,0 +1,30 @@
+create table  if not exists partitioning.map_by_datetime (
+  pm_schema varchar(250) not null,
+  pm_table_name varchar(250) not null,
+  pm_owner varchar(250) not null,
+  pm_tablespace varchar(256) not null,
+  pm_part_column varchar(250) not null,
+  pm_part_interval interval not null,
+  pm_part_name_tmpl varchar(250) default '"_p_"yyyymmddhh24miss'::character varying not null,
+  pm_create_next_from timestamp without time zone not null,
+  pm_create_enabled boolean default false not null,
+  pm_create_forward interval not null,
+  pm_create_last_date  timestamp without time zone,
+  pm_drop_enabled boolean default false not null,
+  pm_drop_retention interval,
+  pm_drop_last_date timestamp without time zone,
+  constraint map_by_datetime_pk primary key(pm_table_name, pm_schema),
+  constraint pm_create_forward_ck check (pm_create_forward >= '00:00:00'::interval),
+  constraint pm_drop_retention_ck check (pm_drop_retention >= '00:00:00'::interval),
+  constraint pm_part_interval_ck check (pm_part_interval >= '00:00:00'::interval)
+);
+comment on column partitioning.map_by_datetime.pm_part_column is 'Название колонки , по которой партиционируется ';
+comment on column partitioning.map_by_datetime.pm_part_interval is 'Толщина партиции. Интервал между предыдущей и следующей партицией';
+comment on column partitioning.map_by_datetime.pm_part_name_tmpl is 'Шаблон суфикса имени партиции. Имя партиции будет pm_schema + pm_table_name +  pm_part_name_tmpl';
+comment on column partitioning.map_by_datetime.pm_create_next_from is 'Хранит дату с которой нужно стартовать следующую партицию';
+comment on column partitioning.map_by_datetime.pm_create_enabled is 'Разрешает (true) или Запрещает (false) создание партиций ';
+comment on column partitioning.map_by_datetime.pm_create_forward is 'На сколько вперед делать партиции';
+comment on column partitioning.map_by_datetime.pm_create_last_date is 'Залогированная дата последнего выполнения создания партиций';
+comment on column partitioning.map_by_datetime.pm_drop_enabled is 'Разрешает (true) или Запрещает (false) удаление партиций ';
+comment on column partitioning.map_by_datetime.pm_drop_retention is 'Интервал назад от  текущей даты ( < pm_create_last_date - pm_drop_retention ). Все партиции оказавшиеся за пределом интервала - удалятся';
+comment on column partitioning.map_by_datetime.pm_drop_last_date is 'Залогированная дата последнего выполнения удаления партиций';
