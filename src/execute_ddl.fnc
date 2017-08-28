@@ -1,16 +1,16 @@
-﻿CREATE OR REPLACE FUNCTION partitioning.execute_ddl(
-    p_schema text,
-    p_table_name text,
-    p_ddl text)
-  RETURNS void AS
+﻿create or replace function partitioning.execute_ddl(
+  p_schema     text,
+  p_table_name text,
+  p_ddl        text)
+  returns void as
 $BODY$
 declare
- 
+
 begin
 
- execute p_ddl;
+  execute p_ddl;
 
- insert into   partitioning.map_by_datetime_ddl
+  insert into partitioning.map_by_datetime_ddl
   (
     pm_schema,
     pm_table_name,
@@ -23,8 +23,8 @@ begin
     current_timestamp,
     p_ddl
   );
- 
+
 end;
 $BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 1;
+language plpgsql volatile
+cost 1;
