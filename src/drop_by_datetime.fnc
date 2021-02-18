@@ -4,15 +4,9 @@ $BODY$
 declare
   v_list        record;
   v_parts       record;
-  v_partition   text;
-  v_shema_table text;
-  v_pattern     text;
-  v_begin_ts    timestamp;
-  v_end_ts      timestamp;
-  v_date_from   text;
-  v_date_to     text;
   v_retention   timestamp;
 begin
+  -- Делаем выборку таблиц у которых включенно удаление партиционирования
   for v_list in
   select
     pm_schema,
@@ -39,15 +33,18 @@ begin
           and p.relname = v_list.pm_table_name
           and pmp.pm_partition_till < v_retention
     loop
+      -- Создаем команду об удалении, выполняем и кладем map_by_datetime_ddl
       perform partitioning.execute_ddl(v_list.pm_schema, v_list.pm_table_name,
                                        'drop table ' || v_parts.pm_partitions_schema || '.' ||
                                        v_parts.pm_partition_name);
-
+      -- Удаляем запись из мониторинга партиций
       delete from partitioning.map_by_datetime_partitions pmp
       where pmp.pm_partition_name = v_parts.pm_partition_name
             and pmp.pm_schema = v_parts.pm_schema
             and pmp.pm_partitions_schema = v_parts.pm_partitions_schema;
     end loop;
+
+     --Обновляем данные о дате нового удаления партиций
     update partitioning.map_by_datetime
     set pm_drop_last_date = current_timestamp
     where pm_schema = v_list.pm_schema
