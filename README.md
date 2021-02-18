@@ -1,6 +1,6 @@
 # Postgres Partitioning
 
-> A tiny and customizable partitioning solution for PostgreSQL 9.4+
+> A tiny and customizable partitioning solution for PostgreSQL 10+
 Provides no need to stop the service for maintenance when you add partitioning.
 
 Installs with start.sql
@@ -9,16 +9,13 @@ Installs with start.sql
 ```
 cd postgres_partitioning
 
-psql
+psql -h host -p port -U user -f ./start.sql
 
-\i  ./start.sql
 -- Configure it with the only one row in a service table
 INSERT INTO partitioning.map_by_datetime (
  pm_schema,
  pm_partitions_schema,
  pm_table_name,
- pm_owner,
- pm_tablespace,
  pm_part_column,
  pm_part_interval,
  pm_part_name_tmpl,
@@ -33,8 +30,6 @@ VALUES (
  'app_schema', -- Application schema;
  'app_partitions', -- Schema to store partitions (may be equal to application schema);
  'parent_table', -- Partitioned table;
- 'table_owner', -- Table owner;
- 'schema_data', -- Tablespace. Usually schemaname || '_data';
  'sys_created_dtime', -- Partitioned column;
  INTERVAL '7 days', -- Partition interval. Any interval allowed but choose partitione name template according to this;
  '"_p_"yyyymmW', -- Partition name template.
@@ -45,7 +40,7 @@ VALUES (
 
  -- Optional columns if you need to drop old partitions
  TRUE, -- Drop enabled;
- INTERVAL '3 months', -- Drop retention. Partitions older than 3 months would be dropped;
+ INTERVAL '3 months' -- Drop retention. Partitions older than 3 months would be dropped;
  );
 
 ```
@@ -59,10 +54,6 @@ CREATE SCHEMA IF NOT EXISTS app_partitions;
 ALTER SCHEMA app_partitions OWNER TO table_owner;
 ```
 
-### Manually call reinit when you change configuration
-```
-SELECT partitioning.reinit_by_datetime('app_schema', 'parent_table');
-```
 ### Create new partitions.
 ```
 -- PgAgent could do it automatically.
