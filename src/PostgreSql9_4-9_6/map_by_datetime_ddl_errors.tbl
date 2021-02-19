@@ -1,0 +1,6 @@
+create table if not exists partitioning.map_by_datetime_ddl_errors (
+  pm_schema     varchar(250)                not null,
+  pm_table_name varchar(250)                not null,
+  pm_err_date   timestamp without time zone not null,
+  pm_err_text   text                        not null
+);
