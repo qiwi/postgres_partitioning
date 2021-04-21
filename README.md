@@ -3,14 +3,15 @@
 > A tiny and customizable partitioning solution for PostgreSQL 10+
 Provides no need to stop the service for maintenance when you add partitioning.
 
-Installs with start.sql
+Installs with `start.sql`
 
 ## Configuration:
-```
+```bash
 cd postgres_partitioning
+psql -h host -p port -U user -f ./src/start.sql
+```
 
-psql -h host -p port -U user -f ./start.sql
-
+```sql
 -- Configure it with the only one row in a service table
 INSERT INTO partitioning.map_by_datetime (
  pm_schema,
@@ -46,29 +47,31 @@ VALUES (
 ```
 
 ### Partitions schema support
-
-```
+```sql
  -- Optional new schema for partitions.
 CREATE SCHEMA IF NOT EXISTS app_partitions;
  -- Do not forget about grants.
 ALTER SCHEMA app_partitions OWNER TO table_owner;
 ```
 
-### Create new partitions.
-```
+### Create new partitions
+```sql
 -- PgAgent could do it automatically.
 SELECT partitioning.create_by_datetime(now()::timestamp);
 ```
 
 ### Transfer data once
 If the partitioning table is not empty use folowing to transfer data.
-##### Notice!
+##### ⚠️ Notice
 This calls truncate parent table which is not transactional-safe. All updates of the "hot" data would be lost.
 It may be better to wait some time if your application does updates of the recently inserted data.
 When you are shure that updates do not affect parent table, call:
 If there are much rows (10 millions +) then watch after your WAL disk space to ensure that data transfer will not crash the database.
-```
+```sql
 SELECT partitioning.transfer_data_to_partitions('features', 'obj_feature_shows_log');
 ```
 It does concurrently transfer data allowing read.
  crash the database.
+
+## License
+[Apache License 2.0](./LICENSE)
