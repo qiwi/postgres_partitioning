@@ -8,3 +8,4 @@ set search_path to partitioning;
 \i  ./create_by_datetime.fnc
 \i  ./drop_by_datetime.fnc
 \i  ./transfer_data_to_partitions.fnc
+\i  ./v_all_partition.vw
