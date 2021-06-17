@@ -28,6 +28,7 @@ begin
         where pm_create_enabled = true
           and pm_create_next_from < pi_scan_date + pm_create_forward
         loop
+            raise notice 'I got here:% is the new value', v_list;
             -- Собираем имя следующей партиции
             v_begin_ts = v_list.pm_create_next_from;
             v_partition_postfix = to_char(v_begin_ts, v_list.pm_part_name_tmpl);
@@ -63,10 +64,6 @@ begin
                             values (v_list.pm_schema, v_list.pm_table_name, v_partition_name, v_begin_ts, v_end_ts,
                                     v_list.pm_partitions_schema);
 
-                            v_begin_ts = v_end_ts;
-                            v_partition_postfix = to_char(v_begin_ts, v_list.pm_part_name_tmpl);
-                            v_begin_ts = to_date(v_partition_postfix, v_list.pm_part_name_tmpl);
-                            v_end_ts = v_begin_ts + v_list.pm_part_interval;
                         exception
                             when others then
                                 begin
@@ -79,6 +76,10 @@ begin
                         end;
                         commit;
                     end if;
+                    v_begin_ts = v_end_ts;
+                    v_partition_postfix = to_char(v_begin_ts, v_list.pm_part_name_tmpl);
+                    v_begin_ts = to_date(v_partition_postfix, v_list.pm_part_name_tmpl);
+                    v_end_ts = v_begin_ts + v_list.pm_part_interval;
                 end loop;
 
             --Обновляем данные о дате новой нарезке партиций
