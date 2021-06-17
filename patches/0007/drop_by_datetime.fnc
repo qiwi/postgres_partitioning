@@ -7,6 +7,12 @@ declare
     v_retention    timestamp;
     v_ddl          text;
     v_message_text text;
+declare
+    v_list         record;
+    v_parts        record;
+    v_retention    timestamp;
+    v_ddl          text;
+    v_message_text text;
 begin
     -- Делаем выборку таблиц у которых включенно удаление партиционирования
     << select_drop_partioning_table >>
@@ -64,5 +70,6 @@ begin
             where pm_schema = v_list.pm_schema
               and pm_table_name = v_list.pm_table_name;
         end loop;
+    commit;
 end;
 $BODY$ language plpgsql;;
