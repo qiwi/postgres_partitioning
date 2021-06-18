@@ -63,10 +63,6 @@ begin
                           values (v_list.pm_schema, v_list.pm_table_name, v_partition_name, v_begin_ts, v_end_ts,
                                   v_list.pm_partitions_schema);
 
-                          v_begin_ts = v_end_ts;
-                          v_partition_postfix = to_char(v_begin_ts, v_list.pm_part_name_tmpl);
-                          v_begin_ts = to_date(v_partition_postfix, v_list.pm_part_name_tmpl);
-                          v_end_ts = v_begin_ts + v_list.pm_part_interval;
                       exception
                           when others then
                               begin
@@ -79,6 +75,10 @@ begin
                       end;
                       commit;
                   end if;
+                  v_begin_ts = v_end_ts;
+                  v_partition_postfix = to_char(v_begin_ts, v_list.pm_part_name_tmpl);
+                  v_begin_ts = to_date(v_partition_postfix, v_list.pm_part_name_tmpl);
+                  v_end_ts = v_begin_ts + v_list.pm_part_interval;
               end loop;
 
           --Обновляем данные о дате новой нарезке партиций

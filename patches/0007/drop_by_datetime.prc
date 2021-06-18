@@ -1,12 +1,6 @@
-create or replace procedure drop_by_datetime(p_scan_date timestamp without time zone)
+create or replace procedure partitioning.drop_by_datetime(p_scan_date timestamp without time zone)
 as
 $BODY$
-declare
-    v_list         record;
-    v_parts        record;
-    v_retention    timestamp;
-    v_ddl          text;
-    v_message_text text;
 declare
     v_list         record;
     v_parts        record;
