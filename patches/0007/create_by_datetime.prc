@@ -1,4 +1,4 @@
-create or replace procedure create_by_datetime(pi_scan_date timestamp without time zone)
+create or replace procedure partitioning.create_by_datetime(pi_scan_date timestamp without time zone)
 as
 $BODY$
 declare
