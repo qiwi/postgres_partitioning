@@ -1,0 +1,21 @@
+create table partitioning.partitioning_template
+(
+    pt_name        varchar(100) primary key,
+    pt_example     varchar(100),
+    pt_description varchar(250)
+);
+
+comment on table partitioning.partitioning_template is 'Таблица возможных шаблонов для названия партиций';
+comment on column partitioning.partitioning_template.pt_name is 'Вид шаблона';
+comment on column partitioning.partitioning_template.pt_example is 'Как будут выглядеть название партиций у таблицы parent_table';
+comment on column partitioning.partitioning_template.pt_description is 'Описание шаблона';
+
+insert into partitioning.partitioning_template(pt_name, pt_example, pt_description)
+values ('"_p_"YYmmdd', 'parent_table_p_210101', 'последние цифры года , номер месяца и день'),
+       ('"_p_"YYmm', 'parent_table_p_2101', 'последние цифры года и номер месяца'),
+       ('"_p_"YYYYmm', 'parent_table_p_202101', 'год и месяц'),
+       ('"_p_"YYYYmmDD', 'parent_table_p_20210101', 'год , месяц и день (рекомендуется при партиционировании по неделям или дням)'),
+       ('"_p_"YYYY"_"mm"_"DD', 'parent_table_p_2021_01_01', 'год , месяц и день с более сложным шаблоном'),
+       ('"_p_"YYYY', 'parent_table_p_2021', 'год'),
+       ('"_p_"YYYYMon', 'parent_table_p_2021jan', 'год и название месяца'),
+       ('"_p_"yyyymmddhh24miss', 'parent_table_p_20210810000000', 'год, месяц, день, час, минуты и секунды');
