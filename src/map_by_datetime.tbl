@@ -4,7 +4,7 @@ create table if not exists partitioning.map_by_datetime (
   pm_table_name        varchar(250)                                                      not null,
   pm_part_column       varchar(250)                                                      not null,
   pm_part_interval     interval                                                          not null,
-  pm_part_name_tmpl    varchar(100) default '"_p_"yyyymmddhh24miss' :: character varying not null,
+  pm_part_name_tmpl    varchar(100) default '"_p_"YYYYmmDD' :: character varying not null,
   pm_create_next_from  timestamp without time zone                                       not null,
   pm_create_enabled    boolean default false                                             not null,
   pm_create_forward    interval                                                          not null,
