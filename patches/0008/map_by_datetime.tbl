@@ -20,7 +20,7 @@ create table if not exists partitioning.map_by_datetime (
 );
 comment on table partitioning.map_by_datetime is 'Таблица настроек партиционировнаия';
 comment on column partitioning.map_by_datetime.pm_schema is 'Название схемы расположение таблицы для партиционирования';
-comment on column partitioning.map_by_datetime.pm_partitions_schema is '"Название схемы, в которой будут создаваться новые секции';
+comment on column partitioning.map_by_datetime.pm_partitions_schema is 'Название схемы, в которой будут создаваться новые секции';
 comment on column partitioning.map_by_datetime.pm_table_name is 'Название таблицы';
 comment on column partitioning.map_by_datetime.pm_part_column is 'Название колонки , по которой партиционируется ';
 comment on column partitioning.map_by_datetime.pm_part_interval is 'Толщина партиции. Интервал между предыдущей и следующей партицией';
