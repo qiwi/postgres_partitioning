@@ -73,5 +73,40 @@ SELECT partitioning.transfer_data_to_partitions('features', 'obj_feature_shows_l
 It does concurrently transfer data allowing read.
  crash the database.
 
+### Partitioning monitoring helpers
+There are several build-in functions to help you monitor partitions creation or drop.
+
+#### Get count of partitions of a specific table in schema per period 
+```sql
+select * from partitioning.count_partitions_for_period_by_lower_bound(
+        'features',
+        'obj_feature_shows_log',
+        now()::date - '4 week'::interval,
+        now()::date + '2 week'::interval
+    );
+```
+
+#### Get information about partitions forward creation of a specific table in schema
+Retrieves information based on settings in ```map_by_datetime``` table
+```sql
+select * from partitioning.get_partitions_forward_creation_current_info('features', 'obj_feature_shows_log');
+```
+
+#### Get information about old partitions drop of a specific table in schema
+Retrieves information based on settings in ```map_by_datetime``` table
+```sql
+select * from partitioning.get_partitions_drop_current_info('features', 'obj_feature_shows_log');
+```
+
+#### Get information about old partitions drop of all tables in all schemas
+```sql
+select * from partitioning.get_full_partitions_forward_creation_current_info();
+```
+
+#### Get information about old partitions drop of all tables in all schemas
+```sql
+select * from partitioning.get_full_partitions_drop_current_info();
+```
+
 ## License
 [Apache License 2.0](./LICENSE)
