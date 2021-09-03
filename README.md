@@ -57,7 +57,7 @@ ALTER SCHEMA app_partitions OWNER TO table_owner;
 ### Create new partitions
 ```sql
 -- PgAgent could do it automatically.
-SELECT partitioning.create_by_datetime(now()::timestamp);
+call partitioning.create_by_datetime(now()::timestamp);
 ```
 
 ### Transfer data once
