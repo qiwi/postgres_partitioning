@@ -1,0 +1,22 @@
+create table if not exists partitioning.map_by_datetime_partitions (
+  pm_schema            varchar(250)                not null,
+  pm_partitions_schema varchar(250)                not null,
+  pm_table_name        varchar(250)                not null,
+  pm_partition_name    varchar(250)                not null,
+  pm_partition_from    timestamp without time zone not null,
+  pm_partition_till    timestamp without time zone not null,
+  constraint map_by_datetime_partitions_pk primary key (pm_table_name, pm_schema, pm_partition_name),
+  constraint map_by_datetime_fk foreign key (pm_table_name, pm_schema)
+  references partitioning.map_by_datetime (pm_table_name, pm_schema)
+  on delete no action
+  on update no action
+  not deferrable
+);
+
+comment on table partitioning.map_by_datetime_partitions is 'Таблица для логирования всех добавленных партиций';
+comment on column partitioning.map_by_datetime_partitions.pm_schema is 'Название схемы расположение таблицы для партиционирования';
+comment on column partitioning.map_by_datetime_partitions.pm_partitions_schema is 'Название схемы для партиционирования';
+comment on column partitioning.map_by_datetime_partitions.pm_table_name is 'Название таблицы которую партиционируют';
+comment on column partitioning.map_by_datetime_partitions.pm_partition_name is 'Имя партиции';
+comment on column partitioning.map_by_datetime_partitions.pm_partition_from is 'Дата начала действия партиции';
+comment on column partitioning.map_by_datetime_partitions.pm_partition_till is 'Дата окончания действия партиции';
