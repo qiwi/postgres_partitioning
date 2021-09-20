@@ -1,0 +1,12 @@
+create table if not exists partitioning.map_by_datetime_ddl (
+  pm_schema     varchar(250)                not null,
+  pm_table_name varchar(250)                not null,
+  pm_ddl_date   timestamp without time zone not null,
+  pm_ddl        text                        not null
+);
+
+comment on table partitioning.map_by_datetime_ddl is 'Таблица для хранения всех ddl команд таких как создание и удаление партиций';
+comment on column partitioning.map_by_datetime_ddl.pm_schema is 'Название схемы расположение таблицы для партиционирования';
+comment on column partitioning.map_by_datetime_ddl.pm_table_name is 'Название таблицы для иcполнения ddl';
+comment on column partitioning.map_by_datetime_ddl.pm_ddl_date is 'Дата выполнения ddl';
+comment on column partitioning.map_by_datetime_ddl.pm_ddl is 'Исполняeмый ddl';

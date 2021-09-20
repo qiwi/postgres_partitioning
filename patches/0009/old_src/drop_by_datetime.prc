@@ -37,7 +37,7 @@ begin
                     -- Создаем команду об удалении, выполняем и кладем map_by_datetime_ddl
                     v_ddl = 'drop table ' || v_parts.pm_partitions_schema || '.' || v_parts.pm_partition_name;
                     begin
-                        call partitioning.execute_ddl(v_list.pm_schema, v_list.pm_table_name, v_ddl);
+                        perform partitioning.execute_ddl(v_list.pm_schema, v_list.pm_table_name, v_ddl);
 
                         -- Удаляем запись из мониторинга партиций
                         delete

@@ -8,7 +8,6 @@ declare
   v_table_name_full     text;
   v_partition_postfix   text;
   v_ddl                 text;
-  v_table_owner         text;
   v_begin_ts            timestamp;
   v_end_ts              timestamp;
   v_message_text        text;
@@ -35,8 +34,6 @@ begin
           v_begin_ts = to_date(v_partition_postfix, v_list.pm_part_name_tmpl);
           v_end_ts = v_begin_ts + v_list.pm_part_interval;
           v_table_name_full = v_list.pm_schema || '.' || v_list.pm_table_name;
-          -- узнаем оунера таблица чтобы правильно накинуть оунера на партиционированную таблицу
-          select tableowner into v_table_owner from pg_tables where schemaname = v_list.pm_schema and tablename = v_list.pm_table_name;
 
           -- Начинаем нарезать
           while (v_end_ts <= pi_scan_date + v_list.pm_create_forward)
@@ -50,13 +47,14 @@ begin
                                 from information_schema.tables
                                 where table_schema = v_list.pm_partitions_schema
                                   and table_name = v_partition_name) then
-                      -- Выполняем ddl и кладем в map_by_datetime_ddl или в случае ошибки в map_by_datetime_ddl_errors
-                      begin
-                        -- Создаем ddl операцию
-                          v_ddl = 'create table ' || v_partition_name_full || ' partition of '
+                      -- Создаем ddl операцию
+                      v_ddl = 'create table ' || v_partition_name_full || ' partition of '
                                   || v_table_name_full || ' for values from (''' || v_begin_ts || ''') to (''' ||
                               v_end_ts || ''')';
-                          call partitioning.execute_ddl(v_list.pm_schema, v_list.pm_table_name, v_ddl);
+
+                      -- Выполняем ddl и кладем в map_by_datetime_ddl или в случае ошибки в map_by_datetime_ddl_errors
+                      begin
+                          perform partitioning.execute_ddl(v_list.pm_schema, v_list.pm_table_name, v_ddl);
                           -- Вставляем в таблицу мониторинга партиций запись о создании новой пратиции
                           insert into partitioning.map_by_datetime_partitions (pm_schema, pm_table_name,
                                                                                pm_partition_name, pm_partition_from,
@@ -64,10 +62,6 @@ begin
                                                                                pm_partitions_schema)
                           values (v_list.pm_schema, v_list.pm_table_name, v_partition_name, v_begin_ts, v_end_ts,
                                   v_list.pm_partitions_schema);
-
-                          -- Накидываем правильного оунера на партиционированную таблицу
-                          v_ddl = 'alter table ' || v_partition_name_full || ' owner to ' || v_table_owner;
-                          call partitioning.execute_ddl(v_list.pm_schema, v_list.pm_table_name, v_ddl);
 
                       exception
                           when others then
@@ -79,6 +73,7 @@ begin
                                   continue select_partioning_table;
                               end;
                       end;
+                      commit;
                   end if;
                   v_begin_ts = v_end_ts;
                   v_partition_postfix = to_char(v_begin_ts, v_list.pm_part_name_tmpl);
