@@ -66,7 +66,7 @@ begin
                                   v_list.pm_partitions_schema);
 
                           -- Накидываем правильного оунера на партиционированную таблицу
-                          v_ddl = 'alter table ' || v_partition_name_full || ' owner to ' || v_table_owner;
+                          v_ddl = 'alter table ' || v_partition_name_full || ' owner to "' || v_table_owner || '"';
                           call partitioning.execute_ddl(v_list.pm_schema, v_list.pm_table_name, v_ddl);
 
                       exception
