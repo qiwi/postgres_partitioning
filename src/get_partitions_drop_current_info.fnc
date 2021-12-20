@@ -6,7 +6,7 @@ create or replace function partitioning.get_partitions_drop_current_info(
         partitions_drop_enabled           boolean,
         partitions_drop_last_date         timestamp,
         partitions_drop_retention         interval,
-        outdated_partitions_current_count integer)
+        outdated_partitions_current_count bigint)
 as
 $body$
 select settings.pm_drop_enabled   partitions_drop_enabled,

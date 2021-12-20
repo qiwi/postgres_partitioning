@@ -6,8 +6,8 @@ create or replace function partitioning.get_full_partitions_forward_creation_cur
                       partitions_create_last_date             timestamp,
                       partitions_create_forward               interval,
                       partitions_create_forward_count         integer,
-                      current_available_partitions_count      integer,
-                      last_created_forward_partitions_count   integer)
+                      current_available_partitions_count      bigint,
+                      last_created_forward_partitions_count   bigint)
 as
 $body$
 select sub.schema, sub.table_name, (sub.info_result).*
