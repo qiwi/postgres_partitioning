@@ -4,7 +4,7 @@ create or replace function partitioning.count_partitions_for_period_by_lower_bou
     in start_date timestamp,
     in end_date timestamp
 )
-    returns integer
+    returns bigint
 as
 $body$
 select count(*)

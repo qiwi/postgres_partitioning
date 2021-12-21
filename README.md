@@ -1,6 +1,6 @@
 # Postgres Partitioning
 
-> A tiny and customizable partitioning solution for PostgreSQL 10+
+> A tiny and customizable partitioning solution for PostgreSQL 11+
 Provides no need to stop the service for maintenance when you add partitioning.
 
 Installs with `start.sql`
